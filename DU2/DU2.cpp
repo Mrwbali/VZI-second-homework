@@ -1,8 +1,6 @@
 // DU2.cpp : Defines the entry point for the console application.
 //
 #include <iostream>
-#include <string>
-#include <memory>
 #include <vector>
 #include "parser.h"
 #include "Graph.h"
@@ -11,14 +9,15 @@ using namespace std::chrono;
 
 int main(int argc, char *argv[])
 {
-	high_resolution_clock::time_point t1_point = high_resolution_clock::now();
+	high_resolution_clock::time_point before_parser_point = high_resolution_clock::now();
 	GraphParser p;
 	Problem_t problem;
 	Graph graph;
+	Graph::Result route;
 
-	p.parse("../map/100.map", problem);
+	p.parse("../map/test10k-dir.map", problem);
 
-	high_resolution_clock::time_point t2_point = high_resolution_clock::now();
+	high_resolution_clock::time_point after_parser_point = high_resolution_clock::now();
 	for ( unsigned i = 0; i < problem.edgeList.size(); i++ )
 	{
 		
@@ -30,17 +29,36 @@ int main(int argc, char *argv[])
 		graph.addNode();
 	}
 
-	high_resolution_clock::time_point t3_point = high_resolution_clock::now();
+	high_resolution_clock::time_point after_make_graph_point = high_resolution_clock::now();
 
-	auto duration = duration_cast<milliseconds>(t2_point - t1_point).count();
+	route = graph.dijkstraIt(0, 9999);
+	std::cout << "Route: ";
+	for (auto i : route.route_vector_)
+	{
+		std::cout << i << " ";
+	}
 
+	std::cout << std::endl;
 
-	auto duration2 = duration_cast<milliseconds>(t3_point - t2_point).count();
+	std::cout << "Delka: " << route.lenght_i_ << std::endl;
 
+	high_resolution_clock::time_point after_dijkstra_point = high_resolution_clock::now();
 
-	std::cout << duration << "ms  " << duration2<< "ms";
-	
-	graph.dijkstraIt(0, 100);
+	auto time_parser = duration_cast<milliseconds>(after_parser_point - before_parser_point).count();
 
+	auto time_graph = duration_cast<milliseconds>(after_make_graph_point - after_parser_point).count();
+
+	auto time_dijkstra = duration_cast<milliseconds>(after_dijkstra_point - after_make_graph_point).count();
+
+	auto time_complete = duration_cast<milliseconds>(after_dijkstra_point - before_parser_point).count();
+
+	std::cout << "Parser: " << time_parser << " ms"<<std::endl;
+
+	std::cout << "Graph: " << time_graph << " ms" << std::endl;
+
+	std::cout << "Dijkstra: " << time_dijkstra << " ms" << std::endl;
+
+	std::cout << "Complete: " << time_complete << " ms" << std::endl;
+	getchar();
 	return 0;
 }

@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
-#include <array>
 #include <set>
 
-class Node;
+
+
 class Graph
 {
 
@@ -15,16 +15,23 @@ public:
 
 private: 
 
-	std::vector<std::vector<std::array<int, 2>>> nodes_vector;
+	std::vector<std::vector<std::pair<int,int>>> nodes_vector;
 
-	std::vector<std::array<int, 2>> edges_vector;
+	std::vector<std::pair<int, int>> edges_vector;
 
 public:
+	
+	struct Result
+	{
+		std::vector<int> route_vector_;
+
+		int lenght_i_;
+	};
 
 	void addNode();
 
 	void addEdge(int node_i, int weight_i);
 
-	std::vector<int> dijkstraIt(int from_i, int where_i);
+	Result dijkstraIt(int from_i, int where_i);
 };
 
